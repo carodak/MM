@@ -13,7 +13,7 @@ from sklearn.externals import joblib
 
 # Get the base_path (where bases are saved in JSON format)
 parent_parent_path = os.path.dirname(parent_path)
-base_path = parent_parent_path+'/Outputs/Bases/JSON/tree_base_test_10_20/learning-base-rdm_10_[0, 1]_20'
+base_path = parent_parent_path+'/Outputs/Bases/JSON/tree_base_test_18_20/learning-base-rdm_18_[0, 1]_20'
 # Choose your representation
 rep_adja = lambda x: mmr.graph_to_vec_adjacency(x)
 representation_array = [rep_adja]

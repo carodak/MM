@@ -16,7 +16,6 @@ def learning_base_to_rep(learning_base, arr_rep):
 
     return learning_base
 
-
 def vec_to_graph(vec):
     """Vector to graph."""
     root = int(round(math.sqrt(len(vec))))

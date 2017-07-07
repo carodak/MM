@@ -13,7 +13,15 @@ import random as rdm
 import csv
 from keras.models import Sequential
 from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
+import re
 # from minerminor import mm_representation as mmr
+
+
+def sorted_nicely( l ): 
+    """ Sort the given iterable in the way that humans expect.""" 
+    convert = lambda text: int(text) if text.isdigit() else text 
+    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
+    return sorted(l, key = alphanum_key)
 
 #explore the iterable, add 1 at each iteration -> return the len of the iterable
 def count_iterable(i): 
@@ -112,27 +120,31 @@ def load_base(label_set_name):
             for graph in list_gaph: #for each graph
                 label_set.append(json_graph.node_link_graph(graph))
             labels_set.append(label_set)
+    #print("labals_set: ",labels_set)
     return labels_set
 
 
 def load_base_n2v(label_set_name):
     """Load the learning base from CSV N2V."""
-    learning_base = [[], []]
-    list_labels_files = [f for f in os.listdir(label_set_name) if os.path.isfile(os.path.join(label_set_name, f))]
+    learning_base = [[], []] #[ [ [[N1L1,N2L1][N1L2 N2L2]],[[]..], [ [[] []], [[] []] ] ]
+
+    #for each n2v file
+    list_labels_files = [f for f in sorted_nicely(os.listdir(label_set_name)) if os.path.isfile(os.path.join(label_set_name, f))]
     for files_name in list_labels_files:
-        arr_file = files_name.split("_")
-        with open(os.path.join(label_set_name, files_name)) as f:
-            incsv = csv.reader(f, delimiter=' ')
+        arr_file = re.split("[_.]+", files_name) #21_1.emb -> arr_file['21', '1', 'emb']
+        #print("arr_file: ",arr_file)
+        with open(os.path.join(label_set_name, files_name)) as f: #obtain the full path of the selected file then open it
+            incsv = csv.reader(f, delimiter=' ') #read the file and obtain numbers of the matrix via the delimiter ' '
             next(incsv)
             mat = []
-            for row in incsv:
+            for row in incsv: #for each row of the file
                 mat.append(row[1:])
-            learning_base[int(arr_file[0])].append(np.matrix(mat))
+                
+            learning_base[int(arr_file[1])].append(np.matrix(mat)) #we'll devide our node2vec learning base into 2 classes like it was with JSON files
+
+    #print("learning_base : ",learning_base)
 
     return learning_base
-    # print(arr_file)
-    # print(list_labels_files[0])
-
 
 
 def tw_split_base(base_path):
