@@ -178,7 +178,7 @@ def learning_base_tw2(nb_nodes, arr_tw_rank, feature_size):
 def learning_base_planar_by_minor_agreg(nb_nodes, _, feature_size, minor):
     """Learning base planar by clique agreg."""
     learning_base = [[], []]
-    print("\nConstruction de la classe planar")
+    print("\nPlanar class creation")
     pbar = ib()
     for step in range(feature_size):
         pbar((step/feature_size)*100)
@@ -243,7 +243,7 @@ def learning_base_planar(nb_nodes, arr_planar_rank, feature_size):
 def learning_base_rdm(nb_nodes, _, feature_size):
     """Generate 0-p/k-p."""
     learning_base = [[], []]
-    print("\nCreation of the test base 0-P/k-P")
+    print("\nTest base creation..; 0-P/k-P")
     learning_base[0] = rdm.sample(list(nx.nonisomorphic_trees(nb_nodes)), feature_size)
     # mmd.show_graph(learning_base[0][0])
     learning_base[1] = agreg_tree(rdm.sample(list(nx.nonisomorphic_trees(nb_nodes)), feature_size), nb_nodes, feature_size)
@@ -256,7 +256,7 @@ def learning_base_rdm_tw2(nb_nodes, _, feature_size):
     learning_base = [[], []]
     tmp = 0
     tree_noniso_list = list(nx.nonisomorphic_trees(nb_nodes))
-    print("\nCreation of the rdm TW2 base")
+    print("\nRdm TW2 base creation..")
     pbar = ib()
     while len(learning_base[0]) < feature_size or len(learning_base[1]) < feature_size:
         graph = agreg_tree([rdm.choice(tree_noniso_list)], nb_nodes, feature_size)[0]

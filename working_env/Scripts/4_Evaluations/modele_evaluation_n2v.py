@@ -14,19 +14,19 @@ import keras as ks
 
 parent_parent_path = os.path.dirname(parent_path)
 clf_path = parent_parent_path+'/Outputs/Models/model.pkl'
-base_path = parent_parent_path+'/Outputs/Bases/JSON/tree_base_test_18_20/learning-base-rdm_18_[0, 1]_20/'
+base_path = parent_parent_path+'/Outputs/Bases/JSON/tree_base_test_18_50/learning-base-rdm_18_[0, 1]_50/'
 arr_rep = [lambda x: mmr.graph_to_vec_adjacency(x)]
 # arr_rep = [lambda x: np.squeeze(np.asarray(nx.laplacian_matrix(x).toarray().reshape(-1)))]
 
-graph_dim = 10
+graph_dim = 18
 keras_model = False
 nbr_classes = 2
 
 
 # Bases Tasks
-learning_base = mmu.load_base(base_path)
+base_n2v = parent_parent_path+'/Outputs/Bases/node2vec/' 
 
-learning_base = mmr.learning_base_to_rep(learning_base, arr_rep)
+learning_base = mmu.load_base_n2v(base_n2v) #now our base contains all node2vec matrixes 
 
 data_set, label_set = mmu.create_sample_label_classification(learning_base)
 

@@ -18,7 +18,7 @@ from sklearn.externals import joblib
 
 #Get the base_path (where bases are saved in JSON format)
 parent_parent_path = os.path.dirname(parent_path)
-base_path = parent_parent_path+'/Outputs/Bases/JSON/tree_base_test_18_100/learning-base-rdm_18_[0, 1]_100'
+base_path = parent_parent_path+'/Outputs/Bases/JSON/tree_base_test_18_20/learning-base-rdm_18_[0, 1]_20'
 
 #Directory where you save your model
 save_path = parent_parent_path+'/Outputs/Models/'
@@ -28,6 +28,7 @@ model = sk_tree.DecisionTreeClassifier
 #
 test_size = 0.2
 #Load the base in memory
+
 learning_base = mmu.load_base(base_path)
 
 i = 1
