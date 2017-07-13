@@ -35,7 +35,7 @@ Library:
 
 Before be saved as JSON files our graphs were networkx graphs
 
-2 AND 3) CHOOSE THE REPRESENTATION BUT ALSO THE CLASSIFIER
+2) CHOOSE THE REPRESENTATION BUT ALSO THE CLASSIFIER
 
 We have combined these steps into one script. 
 
@@ -62,7 +62,7 @@ Once these steps done, you can run the chosen script :
 Warning : if you choose n2v representation, you may have word2vec library error with python 3
 you need to modify your word2vec.py -> return sum(len(list(sentence)) for sentence in job)
 
-4) EVALUATE YOUR MODEL:
+3) EVALUATE YOUR MODEL:
 
 Now, you've got your trained model and you want to know if your model can predict if any given graph has your property P.
 
