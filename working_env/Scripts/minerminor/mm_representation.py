@@ -1,8 +1,17 @@
 """Representation function for MinorMiner."""
+import sys
+import os
+current_path = os.path.dirname(os.path.abspath(__file__))
+parent_path = os.path.dirname(current_path)
+parent_parent_path = os.path.dirname(parent_path)
+sys.path.append(parent_path+'/2_Representations/node2vec')
+import node2vec
+import n2v_main
 import numpy as np
 import networkx as nx
 import math
 from sklearn import decomposition
+from progress_bar import InitBar 
 
 
 def learning_base_to_rep(learning_base, arr_rep):
@@ -15,6 +24,38 @@ def learning_base_to_rep(learning_base, arr_rep):
             learning_base[count_classe][count_graph] = tmp
 
     return learning_base
+
+""" ---- -----
+    First transform our graphs into node2vec matrixes
+    save them (in order to do not have to generate them again)
+    then load them into the learning base (programm)
+"""
+def learning_base_to_node2vec(learning_base, feature_size, p, q):
+    print("\nTransforming our graphs into node2vec graphs..")
+
+    pbar = InitBar()
+    i = 1
+    j = 0
+    for count_classes, classes in enumerate(learning_base): #learning_base contains an array of array of graphs [[graph1_P,graph2_P..],[graph1_!P,graph2_!P..]
+        for count_graph, graph in enumerate(classes): #for each graph of class P or class !P
+            pbar((count_graph/feature_size)*100)
+
+            tmp = graph
+            for edge in tmp.edges():
+                tmp[edge[0]][edge[1]]['weight'] = 1
+            tmp = tmp.to_undirected()
+
+            G = node2vec.Graph(tmp, False, p, q) #directed=false, p=1, q=1
+            G.preprocess_transition_probs()
+            walks = G.simulate_walks(10, 80) #number of walks, walks length
+            filename = '{0}_{1}'.format(i, j) #we will save our file following this : GraphNumber_Property.emb -> 1_0.emb = graph1 which belongs to property 0
+            n2v_main.learn_embeddings(walks, filename)
+            i = i+1
+
+        j = j + 1
+
+    print("Done")
+    return None
 
 def vec_to_graph(vec):
     """Vector to graph."""

@@ -175,7 +175,7 @@ def learning_base_tw2(nb_nodes, arr_tw_rank, feature_size):
     return learning_base
 
 
-def learning_base_planar_by_minor_agreg(nb_nodes, _, feature_size, minor):
+def learning_base_planar_by_minor_agreg(nb_nodes, feature_size, minor):
     """Learning base planar by clique agreg."""
     learning_base = [[], []]
     print("\nPlanar class creation")

@@ -144,7 +144,7 @@ def load_base_n2v(label_set_name):
                
             learning_base[int(arr_file[1])].append(np.array(mat,dtype='float')) #we'll devide our node2vec learning base into 2 classes like it was with JSON files
 
-    print("learning_base : ",learning_base)
+    #print("learning_base : ",learning_base)
 
     return learning_base
 
