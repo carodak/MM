@@ -36,13 +36,18 @@ bases_n2v = True #do you want to generate your node2vec bases ? (default = True)
 
 learning_base = mmu.load_base(base_path)
 
-
+#Hyperparameters
+"""
+p and q : node2vec parameters to choose between Breadth First Search and Depth First Search
+s = matrix size (width)
+"""
 p = 1
 q = 1
+s = 4
 
 if bases_n2v:
 
-	mmr.learning_base_to_node2vec_files(learning_base,1000,p,q)
+	mmr.learning_base_to_node2vec_files(learning_base,1000,p,q,s)
 
 base_n2v = parent_parent_path+'/Outputs/Bases/node2vec/' 
 learning_base = mmu.load_base_n2v(base_n2v) #now our base contains all node2vec matrixes 

@@ -31,29 +31,16 @@ test_size = 0.2
 
 learning_base = mmu.load_base(base_path)
 
-i = 1
-j = 0
-for count_classes, classes in enumerate(learning_base): #learning_base contains an array of array of graphs [[graph1_P,graph2_P..],[graph1_!P,graph2_!P..]
-	for count_graph, graph in enumerate(classes): #for each graph of class P or class !P
+#Hyperparameters
+"""
+p and q : node2vec parameters to choose between Breadth First Search and Depth First Search
+s = matrix size (width)
+"""
+p = 1
+q = 1
+s = 4
 
-		tmp = graph
-		for edge in tmp.edges():
-			tmp[edge[0]][edge[1]]['weight'] = 1
-		tmp = tmp.to_undirected()
-
-		G = node2vec.Graph(tmp, False, 1, 1) #directed=false, p=1, q=1
-		G.preprocess_transition_probs()
-		walks = G.simulate_walks(10, 80) #number of walks, walks length
-		filename = '{0}_{1}'.format(i, j) #we will save our file following this : GraphNumber_Property.emb -> 1_0.emb = graph1 which belongs to property 0
-		n2v_main.learn_embeddings(walks, filename)
-		i = i+1
-
-	j = j + 1
-
-	#output_path = parent_parent_path+'/Outputs/Bases/node2vec/' % j
-
-	#if not os.path.exists(output_path): # we would like to continue separating our 2 properties
-    #		os.makedirs(output_path)
+mmr.learning_base_to_node2vec_files(learning_base,1000,p,q,s)
 
 base_n2v = parent_parent_path+'/Outputs/Bases/node2vec/' 
 

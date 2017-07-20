@@ -32,25 +32,27 @@ test_size = 0.33
 opt = True
 
 bases_n2v = True #do you want to generate your node2vec bases ? (default = True)
-#Load the base in memory
 
-"""Find node2vec hyperparameters"""
 
-#p = 1
-#q = 1
+"""Find node2vec hyperparameters
+p and q : node2vec parameters to choose between Breadth First Search and Depth First Search
+s = matrix size (width)
+
+You can specify the range of your p and q values but also of your matrix size 
+"""
 
 hyperparameters = []
 
 
 
 if bases_n2v:
-  x = np.arange(0.001, 10.0, 0.001)
-  y = np.arange(3, 18, 1)
+  x = np.arange(0.001, 0.002, 0.001)
+  y = np.arange(3, 4, 1)
 
   for p in x:
     for q in x:
       for s in y:
-        learning_base = mmu.load_base(base_path) #load the bases of JSON files
+        learning_base = mmu.load_base(base_path) #load the bases of JSON files, load the base in memory
         mmr.learning_base_to_node2vec_files(learning_base,1000,p,q,s)
 
         base_n2v = parent_parent_path+'/Outputs/Bases/node2vec/' 
@@ -70,7 +72,6 @@ if bases_n2v:
 
         clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
 
-        #clf = model()
         #print("learning_base : ",learning_base)
         #print("x_train : ",x_train)
 
@@ -85,7 +86,7 @@ if bases_n2v:
         solver='lbfgs', tol=0.0001, validation_fraction=0.1, verbose=False,
         warm_start=False)
 
-         # Save the model if destination path is defined
+        # Save the model if destination path is defined
         if save_path:
           joblib.dump(clf, save_path+'model.pkl')
 
@@ -115,7 +116,7 @@ if bases_n2v:
 
         print("hyperparameters",hyperparameters)
 
-print("\n .==== Victory ====.")
+print("\n .=======(((======= Victory ======))======.")
 print("We've finished testing hyperparameters.")
 print("Let's see what we found.")
 
@@ -133,5 +134,6 @@ for h in hyperparameters:
     s = h[2]
 
 print("Best parameters are : p: {0}, q: {1} s: {2} with a precision of {3} ".format(p,q,s,max_precision))
+np.savetxt(parent_parent_path+'/Outputs/Results/node2vec/best_hyperparameters.txt', hyperparameters)
 
 
