@@ -30,7 +30,7 @@ def learning_base_to_rep(learning_base, arr_rep):
     save them (in order to do not have to generate them again)
     We'll load them into the learning base in the programm
 """
-def learning_base_to_node2vec_files(learning_base, feature_size, p, q):
+def learning_base_to_node2vec_files(learning_base, feature_size, p, q, s):
     #first of all, we are going to delete previous node2vec files
     filelist = [ f for f in os.listdir(parent_parent_path+'/Outputs/Bases/node2vec') if f.endswith(".emb")  ]
 
@@ -58,7 +58,7 @@ def learning_base_to_node2vec_files(learning_base, feature_size, p, q):
             G.preprocess_transition_probs()
             walks = G.simulate_walks(10, 80) #number of walks, walks length
             filename = '{0}_{1}'.format(i, j) #we will save our file following this : GraphNumber_Property.emb -> 1_0.emb = graph1 which belongs to property 0
-            n2v_main.learn_embeddings(walks, filename)
+            n2v_main.learn_embeddings(walks, filename, s)
             i = i+1
         print("Finished creating graphs which are in class ", j)
         j = j + 1
