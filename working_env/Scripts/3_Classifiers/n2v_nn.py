@@ -40,12 +40,6 @@ learning_base = mmu.load_base(base_path)
 p = 1
 q = 1
 
-
-param_grid = { 
-    'p': [0.25,0.50,1,2,4],
-    'q': [0.25,0.50,1,2,4]
-}
-
 if bases_n2v:
 
 	mmr.learning_base_to_node2vec_files(learning_base,1000,p,q)
@@ -93,5 +87,5 @@ report = sk.metrics.classification_report(y_test, y_pred, target_names=['P', '!P
 
 print("Base_path : {0}".format(base_path))
 print("Model : {0}".format(model))
-print("Matrice de confusion : \n{0}".format(mat_conf))
+print("Confusion matrix : \n{0}".format(mat_conf))
 print("{0}".format(report))

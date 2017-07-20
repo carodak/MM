@@ -85,10 +85,10 @@ def read_graph():
 def learn_embeddings(walks,n2vGraph):
 	'''
 	Learn embeddings by optimizing the Skipgram objective using SGD.
-	size = default is 128
+	size = default is 128 but it's important to setting it well to have a good learning
 	'''
 	walks = [map(str, walk) for walk in walks]
-	model = Word2Vec(walks, size=4, window=10, min_count=0, sg=1, workers=8, iter=1)
+	model = Word2Vec(walks, size=20, window=10, min_count=0, sg=1, workers=8, iter=1)
 	current_path = os.path.dirname(os.path.abspath(__file__))
 	parent_path = os.path.dirname(current_path)
 	parent_parent_path = os.path.dirname(parent_path)

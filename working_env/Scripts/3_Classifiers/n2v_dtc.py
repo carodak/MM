@@ -93,6 +93,6 @@ report = sk.metrics.classification_report(y_test, y_pred, target_names=['P', '!P
 
 print("Base_path : {0}".format(base_path))
 print("Model : {0}".format(model))
-print("Matrice de confusion : \n{0}".format(mat_conf))
+print("Confusion matrix : \n{0}".format(mat_conf))
 print("{0}".format(report))
 
