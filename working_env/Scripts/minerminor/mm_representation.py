@@ -28,17 +28,26 @@ def learning_base_to_rep(learning_base, arr_rep):
 """ ---- -----
     First transform our graphs into node2vec matrixes
     save them (in order to do not have to generate them again)
-    then load them into the learning base (programm)
+    We'll load them into the learning base in the programm
 """
-def learning_base_to_node2vec(learning_base, feature_size, p, q):
+def learning_base_to_node2vec_files(learning_base, feature_size, p, q):
+    #first of all, we are going to delete previous node2vec files
+    filelist = [ f for f in os.listdir(parent_parent_path+'/Outputs/Bases/node2vec') if f.endswith(".emb")  ]
+
+    for f in filelist:
+        os.remove(parent_parent_path+'/Outputs/Bases/node2vec/'+f)
+    print("We've deleted all previous node2vec files")
+
     print("\nTransforming our graphs into node2vec graphs..")
 
-    pbar = InitBar()
+    print("Warn: It can take a long time, do not close this window")
+
+    #pbar = InitBar()
     i = 1
     j = 0
     for count_classes, classes in enumerate(learning_base): #learning_base contains an array of array of graphs [[graph1_P,graph2_P..],[graph1_!P,graph2_!P..]
         for count_graph, graph in enumerate(classes): #for each graph of class P or class !P
-            pbar((count_graph/feature_size)*100)
+            #pbar((count_graph/feature_size)*100)
 
             tmp = graph
             for edge in tmp.edges():
@@ -51,7 +60,7 @@ def learning_base_to_node2vec(learning_base, feature_size, p, q):
             filename = '{0}_{1}'.format(i, j) #we will save our file following this : GraphNumber_Property.emb -> 1_0.emb = graph1 which belongs to property 0
             n2v_main.learn_embeddings(walks, filename)
             i = i+1
-
+        print("Finished creating graphs which are in class ", j)
         j = j + 1
 
     print("Done")

@@ -14,8 +14,8 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 from sklearn import svm, datasets
 from sklearn.model_selection import GridSearchCV
-import logging
-logging.getLogger('gensim.models.word2vec').setLevel(logging.ERROR) #disable word2vec warnings (to displaying the progress_bar )
+#import logging
+#logging.getLogger('gensim.models.word2vec').setLevel(logging.ERROR) #disable word2vec warnings (to displaying the progress_bar )
 
 #Get the base_path (where bases are saved in JSON format)
 parent_parent_path = os.path.dirname(parent_path)
@@ -48,7 +48,7 @@ param_grid = {
 
 if bases_n2v:
 
-	mmr.learning_base_to_node2vec(learning_base,1000,p,q)
+	mmr.learning_base_to_node2vec_files(learning_base,1000,p,q)
 
 base_n2v = parent_parent_path+'/Outputs/Bases/node2vec/' 
 learning_base = mmu.load_base_n2v(base_n2v) #now our base contains all node2vec matrixes 
