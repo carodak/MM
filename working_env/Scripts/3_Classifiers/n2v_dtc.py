@@ -35,12 +35,16 @@ learning_base = mmu.load_base(base_path)
 """
 p and q : node2vec parameters to choose between Breadth First Search and Depth First Search
 s = matrix size (width)
+walks_n = number of walks
+walks_l = lengh of each walk
 """
 p = 1
 q = 1
 s = 4
+walks_n = 10
+walks_l = 1
 
-mmr.learning_base_to_node2vec_files(learning_base,1000,p,q,s)
+mmr.learning_base_to_node2vec_files(learning_base,20,p,q,s,walks_n,walks_l)
 
 base_n2v = parent_parent_path+'/Outputs/Bases/node2vec/' 
 

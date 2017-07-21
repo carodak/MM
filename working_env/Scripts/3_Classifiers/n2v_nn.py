@@ -15,7 +15,7 @@ from sklearn.externals import joblib
 from sklearn import svm, datasets
 from sklearn.model_selection import GridSearchCV
 #import logging
-#logging.getLogger('gensim.models.word2vec').setLevel(logging.ERROR) #disable word2vec warnings (to displaying the progress_bar )
+#logging.getLogger('gensim.models.word2vec').setLevel(logging.ERROR) #disable word2vec warnings (to display the progress_bar )
 
 #Get the base_path (where bases are saved in JSON format)
 parent_parent_path = os.path.dirname(parent_path)
@@ -27,7 +27,7 @@ save_path = parent_parent_path+'/Outputs/Models/'
 model = nn.MLPClassifier
 
 #
-test_size = 0.33
+test_size = 0.2
 
 bases_n2v = True #do you want to generate your node2vec bases ? (default = True)
 #Load the base in memory
@@ -40,14 +40,19 @@ learning_base = mmu.load_base(base_path)
 """
 p and q : node2vec parameters to choose between Breadth First Search and Depth First Search
 s = matrix size (width)
+walks_n = number of walks
+walks_l = lengh of each walk
 """
-p = 1
-q = 1
+p = 3
+q = 14
+#q = 0.024
 s = 4
+walks_n = 10
+walks_l = 200
 
 if bases_n2v:
 
-	mmr.learning_base_to_node2vec_files(learning_base,1000,p,q,s)
+	mmr.learning_base_to_node2vec_files(learning_base,1000,p,q,s,walks_n,walks_l)
 
 base_n2v = parent_parent_path+'/Outputs/Bases/node2vec/' 
 learning_base = mmu.load_base_n2v(base_n2v) #now our base contains all node2vec matrixes 

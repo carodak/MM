@@ -19,7 +19,7 @@ from sklearn.model_selection import GridSearchCV
 
 #Get the base_path (where bases are saved in JSON format)
 parent_parent_path = os.path.dirname(parent_path)
-base_path = parent_parent_path+'/Outputs/Bases/JSON/base_planar_k5/learning-planar-minor_18_[0,1]_1000'
+base_path = parent_parent_path+'/Outputs/Bases/JSON/base_planar_k5/learning-planar-minor_18_[0,1]_50'
 
 #Directory where you save your model
 save_path = parent_parent_path+'/Outputs/Models/'
@@ -27,11 +27,8 @@ save_path = parent_parent_path+'/Outputs/Models/'
 model = nn.MLPClassifier
 
 #
-test_size = 0.33
+test_size = 0.2
 
-opt = True
-
-bases_n2v = True #do you want to generate your node2vec bases ? (default = True)
 
 
 """Find node2vec hyperparameters
@@ -39,46 +36,47 @@ p and q : node2vec parameters to choose between Breadth First Search and Depth F
 s = matrix size (width)
 
 You can specify the range of your p and q values but also of your matrix size 
+walks_n = number of walks
+walks_l = lengh of each walk
 """
 
 hyperparameters = []
 
+x = np.arange(1, 20, 1)
+y = np.arange(3, 6, 1)
+walks_n = 10
+walks_l = 80
+
+for p in x:
+  for q in x:
+    for s in y:
+      learning_base = mmu.load_base(base_path) #load the bases of JSON files, load the base in memory
+      mmr.learning_base_to_node2vec_files(learning_base,50,p,q,s)
+
+      base_n2v = parent_parent_path+'/Outputs/Bases/node2vec/' 
+
+      learning_base = mmu.load_base_n2v(base_n2v) #now our base contains all node2vec matrixes 
 
 
-if bases_n2v:
-  x = np.arange(0.001, 0.002, 0.001)
-  y = np.arange(3, 4, 1)
+      """MLP trains on two arrays: array X of size (n_samples, n_features), 
+      which holds the training samples represented as floating point feature vectors; and array y of size (n_samples,), 
+      which holds the target values (class labels) for the training samples"""
 
-  for p in x:
-    for q in x:
-      for s in y:
-        learning_base = mmu.load_base(base_path) #load the bases of JSON files, load the base in memory
-        mmr.learning_base_to_node2vec_files(learning_base,1000,p,q,s)
+      # Extract datarows and their associated labels
+      data_set, label_set = mmu.create_sample_label_classification(learning_base)
 
-        base_n2v = parent_parent_path+'/Outputs/Bases/node2vec/' 
+      # Create training set and tests
+      x_train, x_test, y_train, y_test = sk.model_selection.train_test_split(data_set, label_set, test_size=test_size) #if you want add , test_size=test_size
 
-        learning_base = mmu.load_base_n2v(base_n2v) #now our base contains all node2vec matrixes 
+      clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
 
+      #print("learning_base : ",learning_base)
+      #print("x_train : ",x_train)
 
-        """MLP trains on two arrays: array X of size (n_samples, n_features), 
-        which holds the training samples represented as floating point feature vectors; and array y of size (n_samples,), 
-        which holds the target values (class labels) for the training samples"""
+      # Learning model phase
+      clf.fit(x_train, y_train)
 
-        # Extract datarows and their associated labels
-        data_set, label_set = mmu.create_sample_label_classification(learning_base)
-
-        # Create training set and tests
-        x_train, x_test, y_train, y_test = sk.model_selection.train_test_split(data_set, label_set, test_size=test_size) #if you want add , test_size=test_size
-
-        clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-
-        #print("learning_base : ",learning_base)
-        #print("x_train : ",x_train)
-
-        # Learning model phase
-        clf.fit(x_train, y_train)
-
-        MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto',
+      MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto',
         beta_1=0.9, beta_2=0.999, early_stopping=False,
         epsilon=1e-08, hidden_layer_sizes=(5, 2), learning_rate='constant',
         learning_rate_init=0.001, max_iter=200, momentum=0.9,
@@ -86,54 +84,60 @@ if bases_n2v:
         solver='lbfgs', tol=0.0001, validation_fraction=0.1, verbose=False,
         warm_start=False)
 
-        # Save the model if destination path is defined
-        if save_path:
-          joblib.dump(clf, save_path+'model.pkl')
+      # Save the model if destination path is defined
+      if save_path:
+        joblib.dump(clf, save_path+'model.pkl')
 
-        # Testing the model on the training set
-        y_pred = clf.predict(x_test)
-         # Generate confusion matrix
-        mat_conf = sk.metrics.confusion_matrix(y_test, y_pred)
-        # Generate test report
-        report = sk.metrics.classification_report(y_test, y_pred, target_names=['P', '!P'])
-        report2 = sk.metrics.precision_recall_fscore_support(y_test, y_pred, average=None)
+      # Testing the model on the training set
+      y_pred = clf.predict(x_test)
+      # Generate confusion matrix
+      mat_conf = sk.metrics.confusion_matrix(y_test, y_pred)
+      # Generate test report
+      report = sk.metrics.classification_report(y_test, y_pred, target_names=['P', '!P'])
+      report2 = sk.metrics.precision_recall_fscore_support(y_test, y_pred, average='weighted')
 
-        print("Base_path : {0}".format(base_path))
-        print("Model : {0}".format(model))
-        print("p : {0}, q : {1}, s : {2}".format(p,q,s))
-        print("Confusion matrix : \n{0}".format(mat_conf))
-        print("{0}".format(report))
+      print("Base_path : {0}".format(base_path))
+      print("Model : {0}".format(model))
+      print("p : {0}, q : {1}, s : {2}".format(p,q,s))
+      print("Confusion matrix : \n{0}".format(mat_conf))
+      print("{0}".format(report))
 
-        precision = (report2[0][0]+report2[0][1] )/2
+      f_measure = report2[2]
         
-        mat = []
-        mat.append(p)
-        mat.append(q)
-        mat.append(s)
-        mat.append(precision)
+      mat = []
+      mat.append(p)
+      mat.append(q)
+      mat.append(s)
+      mat.append(f_measure)
 
-        hyperparameters.append(mat)
+      hyperparameters.append(mat)
 
-        print("hyperparameters",hyperparameters)
-
-print("\n .=======(((======= Victory ======))======.")
-print("We've finished testing hyperparameters.")
-print("Let's see what we found.")
-
-max_precision = 0.0
-p = 0
-q = 0
-s = 0
+      print("hyperparameters",hyperparameters)
 
 
-for h in hyperparameters:
-  if h[3]>max_precision:
-    max_precision = h[3]
-    p = h[0]
-    q = h[1]
-    s = h[2]
+    """
+    Once we have finished testing hyperparameters
+    Let's print what we found and save it into a file
+    """
 
-print("Best parameters are : p: {0}, q: {1} s: {2} with a precision of {3} ".format(p,q,s,max_precision))
-np.savetxt(parent_parent_path+'/Outputs/Results/node2vec/best_hyperparameters.txt', hyperparameters)
+    print("\n .=======(((======= Victory ======))======.")
+    print("We've finished testing hyperparameters.")
+    print("Let's see what we found.")
+
+    best_measure = 0.0
+    p = 0
+    q = 0
+    s = 0
+
+
+    for h in hyperparameters:
+      if h[3]>best_measure:
+        best_measure = h[3]
+        p = h[0]
+        q = h[1]
+        s = h[2]
+
+    print("Best parameters are : p: {0}, q: {1} s: {2} with a precision of {3} ".format(p,q,s,best_measure))
+    np.savetxt(parent_parent_path+'/Outputs/Results/node2vec/best_hyperparameters.txt', hyperparameters)
 
 
