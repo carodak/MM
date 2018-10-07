@@ -49,7 +49,8 @@ For example you can pass your matrixes to a NN or CNN model
 
 If you choose CNN, your matrixes would be your training data. At the end of the classification the script would print the results of the prediction task.
 
-TODO
+TODO:
+
 Inside of the file (working_env/Scripts/3_Classifiers/simple_classification.py): 
 
 specify the generated base: base_path = parent_parent_path+'/Outputs/Bases/JSON/tree_base_test_10_20/learning-base-rdm_10_[0, 1]_20'
